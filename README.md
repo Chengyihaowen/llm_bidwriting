@@ -30,7 +30,7 @@
 ### 1. 克隆仓库
 
 ```bash
-git clone https://github.com/Chengyihaowen/bid_writing.git
+git clone https://github.com/Chengyihaowen/llm_bidwriting.git
 cd 标书系统v3.0
 ```
 
