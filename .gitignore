@@ -1,0 +1,63 @@
+# ===== Claude / AI 协作配置 =====
+.claude/
+CLAUDE.md
+
+# ===== 环境变量（含 API Key，禁止提交）=====
+.env
+.env.*
+!.env.example
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# ===== 后端运行时数据 =====
+backend/instance/          # SQLite 数据库
+backend/uploads/           # 上传文件 & 导出 Word
+
+# ===== Node / 前端 =====
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+*.local
+*.tsbuildinfo
+.eslintcache
+
+# ===== IDE =====
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== 日志 =====
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ===== 测试 / 覆盖率 =====
+coverage/
+__screenshots__/
+/cypress/videos/
+/cypress/screenshots/
+
+# ===== Vite 临时文件 =====
+*.timestamp-*-*.mjs

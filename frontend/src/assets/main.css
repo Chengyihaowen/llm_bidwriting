@@ -1,0 +1,34 @@
+@import './base.css';
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.el-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.el-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.el-button + .el-button {
+  margin-left: 10px;
+}
+
+.el-dialog {
+  border-radius: var(--radius-lg);
+}
+
+.el-table {
+  --el-table-border-color: var(--border-color);
+  --el-table-header-bg-color: #f8fafc;
+}

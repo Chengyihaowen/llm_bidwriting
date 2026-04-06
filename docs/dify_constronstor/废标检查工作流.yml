@@ -1,0 +1,231 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: 废标检查工作流
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.3.4@3345b596ee5117d9304097feaee866f05ffaf0d76a790fb07acd8b99f6c87cb3
+    version: null
+kind: app
+version: 0.5.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 20
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: llm
+      id: 1774853804066-source-1774853813704-target
+      source: '1774853804066'
+      sourceHandle: source
+      target: '1774853813704'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1774853813704-source-1774854026512-target
+      source: '1774853813704'
+      sourceHandle: source
+      target: '1774854026512'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables:
+        - default: ''
+          hint: ''
+          label: parsed_bid
+          max_length: 500000
+          options: []
+          placeholder: ''
+          required: true
+          type: paragraph
+          variable: parsed_bid
+        - default: ''
+          hint: ''
+          label: risk_clauses
+          max_length: 500000
+          options: []
+          placeholder: ''
+          required: false
+          type: paragraph
+          variable: risk_clauses
+        - default: ''
+          hint: ''
+          label: chapters_content
+          max_length: 500000
+          options: []
+          placeholder: ''
+          required: true
+          type: paragraph
+          variable: chapters_content
+      height: 160
+      id: '1774853804066'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params: {}
+          mode: chat
+          name: gpt-5.1
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 8c3367b8-39f3-4468-963c-e66a8311b1dc
+          role: system
+          text: '你是投标文件风险审查助手。
+
+            你的任务是根据招标文件要求和当前标书内容，识别可能导致废标、响应不完整或评分不足的风险。
+
+
+            严格要求：
+
+            1. 只输出 JSON，不输出任何解释文字
+
+            2. 输出必须包含两个顶级字段：results 和 summary
+
+            3. results 必须是数组
+
+            4. summary 必须是对象，字段为 high、medium、low
+
+            5. riskLevel 只允许为 high、medium、low
+
+            6. high 表示可能直接导致废标、资格不符或实质性不响应
+
+            7. medium 表示关键响应不完整、材料不足、存在明显不确定性
+
+            8. low 表示建议补充、增强或优化
+
+            9. relatedOutlineNodeId 当前阶段统一输出 null
+
+            10. 不能编造不存在的问题，必须依据输入内容判断'
+        - id: fc893eb9-1835-4c83-9f50-0087b855887f
+          role: user
+          text: "请检查当前标书内容的风险，并输出 JSON。\n\n【招标文件解析摘要】\n{{{{#1774853804066.parsed_bid#}}}}\n\
+            \n【关键风险条款】\n{{{{#1774853804066.risk_clauses#}}}}\n\n【当前标书正文】\n{{{{#1774853804066.parsed_bid#}}}}\n\
+            \n输出 JSON 格式如下：\n{\n  \"results\": [\n    {\n      \"riskLevel\": \"high\
+            \ | medium | low\",\n      \"title\": \"问题标题\",\n      \"description\"\
+            : \"问题说明\",\n      \"suggestion\": \"修改建议\",\n      \"relatedOutlineNodeId\"\
+            : null\n    }\n  ],\n  \"summary\": {\n    \"high\": 0,\n    \"medium\"\
+            : 0,\n    \"low\": 0\n  }\n}\n\n要求：\n1. 只输出 JSON\n2. 如果没有明显风险，results\
+            \ 返回空数组，summary 全部为 0\n3. description 要写清楚为什么判定为风险\n4. suggestion 要给出可执行的补充建议"
+        reasoning_format: separated
+        selected: true
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 88
+      id: '1774853813704'
+      position:
+        x: 382
+        y: 282
+      positionAbsolute:
+        x: 382
+        y: 282
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        outputs:
+        - value_selector:
+          - '1774853813704'
+          - text
+          value_type: string
+          variable: results
+        selected: false
+        title: 输出
+        type: end
+      height: 88
+      id: '1774854026512'
+      position:
+        x: 684
+        y: 282
+      positionAbsolute:
+        x: 684
+        y: 282
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: 193.68639219426757
+      y: -71.54859095765488
+      zoom: 0.9999999945368873
+  rag_pipeline_variables: []

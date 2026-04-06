@@ -1,0 +1,302 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: 章节生成工作流
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.3.4@3345b596ee5117d9304097feaee866f05ffaf0d76a790fb07acd8b99f6c87cb3
+    version: null
+kind: app
+version: 0.5.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 20
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1774852397855-source-1774852500822-target
+      source: '1774852397855'
+      sourceHandle: source
+      target: '1774852500822'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1774852061865-source-1775010659061-target
+      source: '1774852061865'
+      sourceHandle: source
+      target: '1775010659061'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: llm
+      id: 1775010659061-source-1774852397855-target
+      source: '1775010659061'
+      sourceHandle: source
+      target: '1774852397855'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables:
+        - default: ''
+          hint: ''
+          label: parsed_bid
+          max_length: 500000
+          options: []
+          placeholder: ''
+          required: true
+          type: paragraph
+          variable: parsed_bid
+        - default: ''
+          hint: ''
+          label: chapter_title
+          max_length: 256
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: chapter_title
+        - default: ''
+          hint: ''
+          label: chapter_structure
+          max_length: 256
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: chapter_structure
+        - default: ''
+          hint: ''
+          label: prompt_requirement
+          max_length: 256
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: prompt_requirement
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - image
+          - document
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          default: ''
+          hint: ''
+          label: file
+          max_length: 500000
+          options: []
+          placeholder: ''
+          required: true
+          type: file
+          variable: file
+      height: 212
+      id: '1774852061865'
+      position:
+        x: 444.0971893079087
+        y: 248.49953221864274
+      positionAbsolute:
+        x: 444.0971893079087
+        y: 248.49953221864274
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            max_tokens: 128000
+          mode: chat
+          name: gpt-5.1
+          provider: langgenius/openai/openai
+        prompt_template:
+        - id: 8e47fad4-79db-4785-997a-59de681f22ad
+          role: system
+          text: "你是专业的投标文件撰写助手。\n你的任务是根据招标文件解析摘要、当前章节结构和用户要求，生成当前章节的标书正文（严格遵照标书的写作风格，减少AI味）。\n\
+            \n严格要求1：\n1. 只生成当前章节内容，不生成其他章节\n2. 输出必须为 Markdown\n3. 标题层级必须严格跟随 chapter_structure\n\
+            4. 必须以 chapter_title 对应的一级标题开始\n5. 如果存在二级小节，必须逐个展开\n6. 语言必须正式、专业、适合标书初稿\n\
+            7. 不得虚构金额、日期、资质、证书、项目业绩、专利、参数、品牌等事实性信息\n8. 对于文件未明确给出的内容，使用稳妥、审慎、通用的表述，不夸大承诺\n\
+            9. 尽量覆盖招标文件中的评分点、响应点和实质性要求\n10. 不输出任何解释、说明、前言或“以下为生成结果”之类内容\n\n严格要求2：\n\
+            1. 只输出最终的 Markdown 正文\n2. 不要输出思考过程、推理过程、分析过程、草稿、自检内容\n3. 不要输出 <think>...</think>\
+            \ 标签及其中任何内容\n4. 不要输出“我先分析”“下面开始思考”“推理如下”等文本\n\n写作风格约束：\n1. 采用“技术标书正文”写法，不写宣传文案，不写方案总述式空话，不写领导讲话式表述。\n\
+            2. 句子要直白、短句化、说明式，一句话尽量只表达一个事实或一个设计点。\n3. 优先使用“如图，系统由……组成。其中：”“资源层：……”“数据层：……”这类直述句，不要先写大段概括性铺垫。\n\
+            4. 少用形容词、副词和评价性措辞，禁止无依据的正面评价。\n5. 不要使用英文层名、英文括注、ASCII 字符画架构图、伪流程图、宣传式小标题；如需体现图示，不画图，只保留图名和插图占位标识。\n\
+            6. 除非招标文件或模板明确要求，否则不要额外生成“总体说明”“设计目标”“方案优势”“供货清单对照表”“备注说明”等新小节。\n7. 对招标文件已经明确写出的系统、模块、层级、数量、接口名称，直接沿用原称呼，不换一种更“好听”的说法。\n\
+            \n插图占位规则：\n1. 需要插图时，必须显式预留插图位置，格式优先写成两行：\n   图 X系统组成图\n   （此处插入系统组成图）\n\
+            2. 如为架构图、原理图、流程图、接口关系图、部署示意图、建成效果示意图等，均按“图名 + 插图占位”方式输出，不得输出 ASCII 图，不得用文字模拟画图。\n\
+            3. 插图占位应放在对应说明文字之前，后文再使用“如图，……”展开说明。\n4. 图号使用阿拉伯数字顺序编号；若当前章节已有明确图号或招标原文已有图号，沿用原号。\n\
+            \n禁写词和禁写句式：\n- 禁止出现“严格遵循……总体技术要求，采用模块化、分层化设计思想，构建……有机整体”\n- 禁止出现“高效协同”“有机统一”“沉浸式”“全方位”“完整覆盖”“全面支撑”“充分满足”“完全响应”“先进成熟”“灵活扩展”“稳定可靠”等空泛表述\n\
+            - 禁止出现“核心视觉输出终端”“数据消费者也是数据的生产者”“宏观与微观互补”“联合调试支持”等解释性包装语言\n- 禁止为了显得专业而故意扩写同义句，能直接写结论就直接写结论\n\
+            \n重点章节写法：\n1. 如果小节标题是“系统组成”，优先写成：\n   图 X系统组成图\n   （此处插入系统组成图）\n   如图，XXX系统由A、B、C组成。其中：\n\
+            \   A：……\n   B：……\n   C：……\n2. 如果小节标题是“逻辑架构”，优先写成：\n   图 X系统架构图\n   （此处插入系统架构图）\n\
+            \   如图，XXX系统采用分层架构设计，其中：\n   资源层：……\n   数据层：……\n   支撑层：……\n   业务层：……\n\
+            \    应用层：……\n3. 如果小节标题是“技术架构”，直接按引擎、模块或组件逐项展开，先写“XX引擎/XX模块”，再写功能点，不要先写空泛总述。\n\
+            4. 如果小节标题是“工作原理”，优先写成：\n   图 X系统原理图\n   （此处插入系统原理图）\n   系统之间的数据交联关系和视频接入关系如上图所示。……\n\
+            5. 如果小节标题是“工作流程”，按步骤编号逐步写“做什么、看到什么、验证什么”，不要写空泛总结。\n6. 如果工作流程中需要部署示意图、过程示意图、命中示意图等，也只输出：\n\
+            \   图 XXXX示意图\n   （此处插入XXXX示意图）\n   然后继续写该步骤说明。\n\n严格规则：\n1. 原始模板中的所有非空固定内容都视为锁定内容，绝对不得修改、删减、改写、同义替换、重排顺序。\n\
+            2. 锁定内容包括但不限于：标题、序号、表头、条款名称、固定说明、注释、已有单元格文字、星号、编号、括号、标点、单位。\n3. 只允许填写以下位置：\n\
+            \   - 原模板中的空白单元格\n   - 下划线、空括号、留白处\n   - 明确要求“由投标人填写”的位置\n4. 不允许新增任何原模板中不存在的内容，包括：\n\
+            \   - 不允许新增行\n   - 不允许新增列\n   - 不允许新增条目\n   - 不允许新增说明文字\n   - 不允许新增注释\n\
+            \   - 不允许新增小标题\n5. 不允许漏掉原模板已有项目。原模板有几行几列、几个条目，输出就必须保留几行几列、几个条目。\n6. 对表格，必须严格保持：\n\
+            \   - 表格数量一致\n   - 表头一致\n   - 行顺序一致\n   - 列顺序一致\n   - 序号一致\n   - 分项名称一致\n\
+            7. 原模板中已有的引用性文字必须原样保留，例如“见第一章招标公告”“详见招标公告”“见投标人须知前附表”等，禁止改写。\n8. 如某填写项无法从输入信息中确定，保留原空白或原占位，不得猜测、不得编造、不得用你自己的话补充。\n\
+            9. 可对模板外的正文部分进行必要生成，但模板部分必须严格锁定，只做最小填写。\n10. 输出中不得包含任何解释、说明、提示语、前言、后记，只输出最终章节内容。\n\
+            \n补充约束：\n- 不得虚构金额、报价、日期、资质、证书编号、业绩、联系人、电话、地址、银行账号等事实性信息。\n- 对报价表，只能在模板允许的分项层级下填写；若招标文件明确禁止新增其他分项，则绝对不得新增。\n\
+            - 对偏差表、技术偏差表，必须逐条对应原模板，不得自行合并、拆分或改写条款。\n- 对带星号（*、★）的重要技术条款，如模板要求填写支持资料位置，必须保留该字段，不得删除或改名。"
+        - id: 987888f3-946c-47f8-bf2b-d6a194c019ac
+          role: user
+          text: "请生成以下标书章节内容。\n【招标文件原文内容】\n{{{{#1775010659061.text#}}}}\n\n\n【当前章节标题】\n\
+            {{{#1774852061865.chapter_title#}}}}\n\n【当前章节结构】\n{{{{#1774852061865.chapter_structure#}}}}\n\
+            \n【用户补充要求】\n{{{#1774852061865.prompt_requirement#}}}}\n\n\n请严格遵守以下生成要求：\n\
+            1. 只输出当前章节 Markdown 正文\n2. 必须从当前章节一级标题开始\n3. 所有二级标题必须按 chapter_structure\
+            \ 展开\n4. 不要漏掉任何已经给出的子标题\n5. 内容应可直接作为网页中的章节初稿使用\n6. 避免空泛套话，尽量具体但不要虚构事实\n\
+            7. 如果章节更偏“响应性内容”，要体现对招标要求的对应说明。\n8. 非模板部分可正常生成，模板部分必须严格保留原样，仅填写允许填写的位置。\n\
+            9. 固定标题、固定条款、固定表头、固定注释、固定行列，不得做任何修改。\n10. 只允许填写空白处、占位处、明确待填写处。\n11. 无法确认的填写项，保留空白或原占位，不得猜测。\n\
+            12. 不得新增原模板没有的条目、行、列、说明、注释。\n13. 如果模板中包含表格，输出表格结构必须与原模板一致。\n14. 不得漏掉原模板已有的任何条目。\n\
+            15. 只输出最终结果，不输出解释。\n16. 写法尽量贴近人工技术标书：直接写组成、层级、功能、接口、步骤，不先写大段拔高性概述。\n17.\
+            \ 如果是“系统组成/逻辑架构/技术架构/工作原理/工作流程”类章节，优先模仿以下句式：\n    - “如图，XXX系统由……组成。其中：”\n\
+            \    - “如图，XXX系统采用分层架构设计，其中：”\n    - “XX引擎具备以下功能：”\n    - “系统之间的数据交联关系和视频接入关系如上图所示。”\n\
+            18. 不要输出英文括注、ASCII 架构图、伪代码式框图；需要表示图时，必须输出“图名 + 插图占位”，例如：\n    图 1系统组成图\n\
+            \    （此处插入系统组成图）\n19. 插图占位要放在对应文字说明前，后文再写“如图，……”；不要把图说明写成一整段废话。\n20. 除非\
+            \ `chapter_structure` 或招标原文中明确出现，不要擅自增加“供货清单对照表”“备注”“优势说明”等新标题或新表格。\n"
+        reasoning_format: separated
+        selected: true
+        title: GenerateChapter
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1774852397855'
+      position:
+        x: 1046.0971893079086
+        y: 248.49953221864274
+      positionAbsolute:
+        x: 1046.0971893079086
+        y: 248.49953221864274
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        outputs:
+        - value_selector:
+          - '1774852397855'
+          - text
+          value_type: string
+          variable: chapter_content
+        selected: false
+        title: 输出
+        type: end
+      height: 87
+      id: '1774852500822'
+      position:
+        x: 1348.0971893079086
+        y: 248.49953221864274
+      positionAbsolute:
+        x: 1348.0971893079086
+        y: 248.49953221864274
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        is_array_file: false
+        selected: false
+        title: 文档提取器
+        type: document-extractor
+        variable_selector:
+        - '1774852061865'
+        - file
+      height: 103
+      id: '1775010659061'
+      position:
+        x: 746.0971893079087
+        y: 248.49953221864274
+      positionAbsolute:
+        x: 746.0971893079087
+        y: 248.49953221864274
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    viewport:
+      x: -628.0420636506715
+      y: -50.00185679170943
+      zoom: 0.9999999972684439
+  rag_pipeline_variables: []
