@@ -21,8 +21,8 @@ venv/
 env/
 
 # ===== 后端运行时数据 =====
-backend/instance         # SQLite 数据库
-backend/uploads         # 上传文件 & 导出 Word
+backend/instance/
+backend/uploads/
 
 # ===== Node / 前端 =====
 node_modules/
